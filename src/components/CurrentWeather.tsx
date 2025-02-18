@@ -1,18 +1,18 @@
 import {Geolocation, Weather} from "../interfaces/types.ts";
 import {styled} from 'styled-components';
 
-const WeatherContainer = styled.div`
+const WeatherContainer = styled.div<{ cycle: number }>`
     display: flex;
     flex-direction: row;
     width: 60vw;
     margin: 0 auto;
     height: 35vh;
-    background: linear-gradient(to right, rgba(255, 255, 255, 1), rgba(255, 236, 210, 1));
+    background: linear-gradient(to right, ${(props) => (props.cycle ? "#ffffff, #ffecd2" : "#191970, #000020")});
     border: #332d2d 0.2vw solid; //dynamic property or 3.2px
     border-radius: 15px;
     padding: 2vw 3.3vh 2vw 3vh;
-    color: #332d2d;
-    box-shadow: 1px 2px 20px black;
+    color: ${(props) => (props.cycle ? "#332d2d" : "#ffffff")};
+    box-shadow: 1px 2px 4px black;
 `
 
 //small containers inside the weather container
@@ -25,13 +25,19 @@ const InfoContainerLeft = styled.div`
 `
 //children start
 //content inside the small containers
+const CurrentTime = styled.h3`
+    padding-left: 0;
+    padding-bottom: 1vh;
+    font: small-caps  calc(2px + 1vw) Poppins;
+`
+
 const LocationText = styled.h2`
     font: small-caps bold calc(5px + 1.5vw) Poppins;
 
 `
 const WeatherText = styled.h2`
     padding-top: 1.5vh;
-    font: small-caps bold calc(15px + 3.5vw) Poppins;
+    font: small-caps bold calc(15px + 3.5vw) "Roboto", sans-serif;
 `
 
 const FeelsLikeText = styled.h3`
@@ -64,13 +70,14 @@ const ExtraContent = styled.h3`
 `
 //children end
 
-export default function CurrentWeather(props : { currentw: Weather["current"], currentloc: Geolocation }) {
+export default function CurrentWeather(props : { currentw: Weather["current"], currentloc: Geolocation, cycle: number }) {
     return (
-        <WeatherContainer>
+        <WeatherContainer cycle={props.cycle}>
             <InfoContainerLeft>
+                <CurrentTime>{props.currentw.time}</CurrentTime>
                 <LocationText>{props.currentloc.city},</LocationText>
                 <LocationText>{props.currentloc.country}</LocationText>
-                <WeatherText>{props.currentw.temperature_2m}°F</WeatherText>
+                <WeatherText>{props.currentw.temperature_2m}°F {props.cycle ? "☀️" : "🌙"}</WeatherText>
                 <FeelsLikeText>Feels like {props.currentw.apparent_temperature}°F</FeelsLikeText>
             </InfoContainerLeft>
             <InfoContainerRight>

@@ -1,7 +1,7 @@
-import ColorContainer from './components/ColorContainer';
+import DailyWeather from "./components/DailyWeather.tsx";
 import CurrentWeather from './components/CurrentWeather';
 import {useEffect, useState} from "react";
-import {Entry, Weather, Geolocation} from "./interfaces/types.ts";
+import {Weather, Geolocation} from "./interfaces/types.ts";
 import {styled} from "styled-components";
 
 const ParentDiv = styled.div`
@@ -10,47 +10,49 @@ const ParentDiv = styled.div`
     width: 80vw;
     margin: auto;
     height: 100vh;
-    background-color: #242424;
+    //background-color: #242424;
+    gap: 2vh;
+    @media screen and (max-width: 1000px) {
+        width: 97vw;
+    }
 `
+//header start
+const Header = styled.header`
+    display: flex;
+    flex-direction: row;
+    padding: 2vh 1vw 1vh 1vw;
 
+`
+const HeaderChildleft = styled.div`
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+`
+const HeaderChildright = styled.div`
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+`
+const Button = styled.button`
+    align-items: end;
+`
+//header end
 const WebsiteHeader = styled.h1`
-    color: #535bf2;
-    text-align: center;
-    padding: 3vh 0 2vh 0;
+    text-align: left;
+    font: small-caps bold calc(3px + 1.5vw) Poppins;
 `
 
 const WebsiteDescription = styled.p`
-    color: #535bf2;
-    text-align: center;
-    padding: 0 0 2vh 0;
+    text-align: left;
+    font: small-caps calc(2px + 0.7vw) Poppins;
 `
-
-/*
-export default function App() {
-    const [color, setColor] = useState<Entry[]>([]);
-    useEffect(() => {
-        async function ApiRetrieve() {
-            const rawData = await fetch("https://www.colourlovers.com/api/colors/new?format=json");
-            const data: Entry[] = await rawData.json();
-            setColor(data);
-        }
-        ApiRetrieve()
-            .then(() => console.log("Successfully retrieved"))
-            .catch((e) => console.log("there was an error" + e));
-    }, [])
-
-    return (
-        <ParentDiv>
-            <ColorContainer data={color} />
-        </ParentDiv>
-    )
-}
-*/
 
 export default function App() {
     const placeholder: Geolocation = {latitude: "-90", longitude: "0", city: "", country: ""};
     const weatherplaceholder: Weather = {
         current: {
+            time: "",
             temperature_2m: 0,
                 relative_humidity_2m: 0,
                 apparent_temperature: 0,
@@ -62,7 +64,8 @@ export default function App() {
         },
         daily: {
             time: [],
-                temperature_2m_max: []
+                temperature_2m_max: [],
+                temperature_2m_min: [],
         }
     }
 
@@ -89,7 +92,7 @@ export default function App() {
         async function WeatherRetrieve() {
             if (geolocation.latitude !== "-90" && geolocation.longitude !== "0") { //only retrieve from api after we have geolocation info
                 const rawData =
-                    await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${geolocation.latitude}&longitude=${geolocation.longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,cloud_cover,wind_speed_10m&daily=temperature_2m_max&past_days=7&temperature_unit=fahrenheit`)
+                    await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${geolocation.latitude}&longitude=${geolocation.longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,cloud_cover,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min&past_days=3&&forecast_days=5&temperature_unit=fahrenheit`)
                 const data: Weather = await rawData.json();
                 setWeather(data);
             } else {
@@ -103,12 +106,28 @@ export default function App() {
 
     }, [geolocation]) //wait for geolocation to change
 
+    //misc - test day/night cycle
+    const [cycle, setCycle] = useState(weather.current.is_day);
+    function ChangeCycle() {
+        if(cycle) {
+            setCycle(0);
+        } else {
+            setCycle(1);
+        }
+    }
     return (
         <ParentDiv>
-            <WebsiteHeader>Weather Forecast</WebsiteHeader>
-            <WebsiteDescription>show</WebsiteDescription>
-            <CurrentWeather currentw={weather.current} currentloc={geolocation} />
-
+            <Header>
+                <HeaderChildleft>
+                    <WebsiteHeader>Weather Forecast</WebsiteHeader>
+                    <WebsiteDescription>show</WebsiteDescription>
+                </HeaderChildleft>
+                <HeaderChildright>
+                    <Button onClick={ChangeCycle}>change cycle ({cycle ? "night" : "day"})</Button>
+                </HeaderChildright>
+            </Header>
+            <CurrentWeather currentw={weather.current} currentloc={geolocation} cycle={cycle}/>
+            <DailyWeather dailyw={weather.daily} />
         </ParentDiv>
     )
 }
