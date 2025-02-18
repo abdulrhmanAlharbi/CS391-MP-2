@@ -7,11 +7,13 @@ export interface Entry { //object that will store information we need form the a
 export interface Weather {
     current: {
         temperature_2m: number;
-        relative_humidity: number;
+        relative_humidity_2m: number;
         apparent_temperature: number;
         is_day: number;
         precipitation: number;
         rain: number;
+        cloud_cover: number;
+        wind_speed_10m: number;
     }
     daily: {
         time: string[];

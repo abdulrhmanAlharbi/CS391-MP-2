@@ -56,7 +56,9 @@ export default function App() {
                 apparent_temperature: 0,
                 is_day: 0,
                 precipitation: 0,
-                rain: 0
+                rain: 0,
+                cloud_cover: 0,
+                wind_speed_10m: 0,
         },
         daily: {
             time: [],
@@ -85,12 +87,15 @@ export default function App() {
     useEffect (() => {
         //retrieve weather information
         async function WeatherRetrieve() {
-            const rawData =
-                await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${geolocation.latitude}&longitude=${geolocation.longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain&daily=temperature_2m_max&past_days=7`)
-            const data: Weather = await rawData.json();
-            setWeather(data);
+            if (geolocation.latitude !== "-90" && geolocation.longitude !== "0") { //only retrieve from api after we have geolocation info
+                const rawData =
+                    await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${geolocation.latitude}&longitude=${geolocation.longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,cloud_cover,wind_speed_10m&daily=temperature_2m_max&past_days=7&temperature_unit=fahrenheit`)
+                const data: Weather = await rawData.json();
+                setWeather(data);
+            } else {
+                console.log("Waiting for geolocation update...");
+            }
         }
-
         //call function
         WeatherRetrieve()
             .then(() => console.log("open-meteo: Successful"))
@@ -102,8 +107,8 @@ export default function App() {
         <ParentDiv>
             <WebsiteHeader>Weather Forecast</WebsiteHeader>
             <WebsiteDescription>show</WebsiteDescription>
-            <CurrentWeather currentw={weather.current} />
-            <p style={{backgroundColor:"green"}}>11111</p>
+            <CurrentWeather currentw={weather.current} currentloc={geolocation} />
+
         </ParentDiv>
     )
 }
