@@ -56,7 +56,7 @@ export default function App() {
             temperature_2m: 0,
                 relative_humidity_2m: 0,
                 apparent_temperature: 0,
-                is_day: 0,
+                is_day: 1,
                 precipitation: 0,
                 rain: 0,
                 cloud_cover: 0,

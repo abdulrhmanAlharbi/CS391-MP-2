@@ -97,7 +97,7 @@ export default function CurrentWeather(props : { currentw: Weather["current"], c
                 <CurrentTime>{props.currentw.time}</CurrentTime>
                 <LocationText>{props.currentloc.city},</LocationText>
                 <LocationText>{props.currentloc.country}</LocationText>
-                <WeatherText>{props.currentw.temperature_2m}°<Fsmall>F</Fsmall>{props.currentw.is_day} {props.cycle ? "☀️" : "🌙"}</WeatherText>
+                <WeatherText>{props.currentw.temperature_2m}°<Fsmall>F</Fsmall> {props.cycle ? "☀️" : "🌙"}</WeatherText>
                 <FeelsLikeText>Feels like {props.currentw.apparent_temperature}°F</FeelsLikeText>
             </InfoContainerLeft>
             <InfoContainerRight>
