@@ -30,24 +30,27 @@ const DateText = styled.h4`
 `
 const TempMin = styled.h5`
     text-align: center;
-    font: small-caps calc(2px + 1vw) Poppins;
+    font: small-caps bold calc(2px + 0.9vw) Poppins;
 `
 const TempMax = styled.h5`
     text-align: center;
     font: small-caps bold calc(4px + 1vw) Poppins;
-
+`
+const Textsmall = styled.span`
+    font: small-caps calc(2px + 0.7vw) Poppins;
+    color: dimgray;
 `
 //children end
 
-export default function DailyWeather(props: {dailyw: Weather["daily"]}) { //contains date and max temperature
+export default function DailyWeather(props: {dailyw: Weather["daily"]}) { //contains date and max/min temperature
     return(
         <DailyParent>
             {
                 props.dailyw.time.map((time: string, index: number) => //index will be needed to get the temperature corresponding to the date
                 <DailyContainer>
                     <DateText>{time}</DateText>
-                    <TempMax>Max: {props.dailyw.temperature_2m_max[index]}°F</TempMax>
-                    <TempMin>Min: {props.dailyw.temperature_2m_min[index]}°F</TempMin>
+                    <TempMax>{props.dailyw.temperature_2m_max[index]}°<Textsmall>MAX</Textsmall></TempMax>
+                    <TempMin>{props.dailyw.temperature_2m_min[index]}°<Textsmall>MIN</Textsmall></TempMin>
                 </DailyContainer>
             )
             }

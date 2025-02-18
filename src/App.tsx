@@ -29,7 +29,7 @@ const HeaderChildleft = styled.div`
     flex-direction: column;
 `
 const HeaderChildright = styled.div`
-    flex: 1;
+    flex: 0.5;
     display: flex;
     align-items: flex-end;
     flex-direction: column;
@@ -119,8 +119,12 @@ export default function App() {
         <ParentDiv>
             <Header>
                 <HeaderChildleft>
-                    <WebsiteHeader>Weather Forecast</WebsiteHeader>
-                    <WebsiteDescription>show</WebsiteDescription>
+                    <WebsiteHeader>Live Weather Tracker</WebsiteHeader>
+                    <WebsiteDescription>
+                        This website fetches weather data from Open-Meteo API and determines the user's location through GeoJS API.
+                        The website utilizes the user's IP to estimate their location and requires no additional permissions. The widgets display real-time weather conditions,
+                        and the UI theme changes based on day/night cycle. The button in the top-right corner can be used to test the alternative theme.
+                    </WebsiteDescription>
                 </HeaderChildleft>
                 <HeaderChildright>
                     <Button onClick={ChangeCycle}>change cycle ({cycle ? "night" : "day"})</Button>

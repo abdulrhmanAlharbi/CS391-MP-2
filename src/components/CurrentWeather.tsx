@@ -39,6 +39,9 @@ const WeatherText = styled.h2`
     padding-top: 1.5vh;
     font: small-caps bold calc(15px + 3.5vw) "Roboto", sans-serif;
 `
+const Fsmall = styled.span`
+    font: small-caps bold calc(10px + 2vw) "Roboto", sans-serif;
+`
 
 const FeelsLikeText = styled.h3`
     padding-left: 2vw;
@@ -71,17 +74,34 @@ const ExtraContent = styled.h3`
 //children end
 
 export default function CurrentWeather(props : { currentw: Weather["current"], currentloc: Geolocation, cycle: number }) {
+
+    //a simple function to give a description instead of a percentage
+    function CloudDescription(cloud_cover: number): string{
+        if(cloud_cover === 0) {
+            return "clear Sky";
+        } else if (cloud_cover < 30) {
+            return "Mostly Clear sky"
+        } else if (cloud_cover < 60) {
+            return "Partly Cloudy";
+        } else if (cloud_cover < 90) {
+            return "Mostly Cloudy"
+        } else {
+            return "Cloudy";
+        }
+
+    }
+
     return (
         <WeatherContainer cycle={props.cycle}>
             <InfoContainerLeft>
                 <CurrentTime>{props.currentw.time}</CurrentTime>
                 <LocationText>{props.currentloc.city},</LocationText>
                 <LocationText>{props.currentloc.country}</LocationText>
-                <WeatherText>{props.currentw.temperature_2m}°F {props.cycle ? "☀️" : "🌙"}</WeatherText>
+                <WeatherText>{props.currentw.temperature_2m}°<Fsmall>F</Fsmall> {props.cycle ? "☀️" : "🌙"}</WeatherText>
                 <FeelsLikeText>Feels like {props.currentw.apparent_temperature}°F</FeelsLikeText>
             </InfoContainerLeft>
             <InfoContainerRight>
-                <ContentHeader>Cloud cover: {props.currentw.cloud_cover}%</ContentHeader>
+                <ContentHeader>{CloudDescription(props.currentw.cloud_cover)}</ContentHeader>
                 <ExtraContent>precipitation: {props.currentw.precipitation}%</ExtraContent>
                 <ExtraContent>Humidity: {props.currentw.relative_humidity_2m}%</ExtraContent>
                 <ExtraContent>Wind speed: {props.currentw.wind_speed_10m} km/h</ExtraContent>

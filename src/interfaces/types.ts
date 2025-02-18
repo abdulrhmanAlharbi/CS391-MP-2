@@ -1,9 +1,3 @@
-export interface Entry { //object that will store information we need form the api
-    id: number;
-    title: string;
-    hex: string;
-}
-
 export interface Weather {
     current: {
         time: string;
