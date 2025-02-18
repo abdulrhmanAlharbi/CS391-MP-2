@@ -49,7 +49,7 @@ const WebsiteDescription = styled.p`
 `
 
 export default function App() {
-    const placeholder: Geolocation = {latitude: "-90", longitude: "0", city: "", country: ""};
+    const placeholder: Geolocation = {latitude: "-90", longitude: "0", city: "", country: "", timezone: ""};
     const weatherplaceholder: Weather = {
         current: {
             time: "",
@@ -92,7 +92,7 @@ export default function App() {
         async function WeatherRetrieve() {
             if (geolocation.latitude !== "-90" && geolocation.longitude !== "0") { //only retrieve from api after we have geolocation info
                 const rawData =
-                    await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${geolocation.latitude}&longitude=${geolocation.longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,cloud_cover,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min&past_days=3&&forecast_days=5&temperature_unit=fahrenheit`)
+                    await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${geolocation.latitude}&longitude=${geolocation.longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,cloud_cover,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min&past_days=3&&forecast_days=5&temperature_unit=fahrenheit&timezone=${geolocation.timezone}`)
                 const data: Weather = await rawData.json();
                 setWeather(data);
             } else {
@@ -115,6 +115,12 @@ export default function App() {
             setCycle(1);
         }
     }
+
+    //change theme when cycle is updated - to get original cycle on refresh
+    useEffect(() => {
+        setCycle(weather.current.is_day);
+    }, [weather, weather.current.is_day]);
+
     return (
         <ParentDiv>
             <Header>

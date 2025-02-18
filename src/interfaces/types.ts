@@ -18,6 +18,7 @@ export interface Weather {
 }
 
 export interface Geolocation {
+    timezone: string;
     latitude: string;
     longitude: string;
     country: string;
