@@ -73,7 +73,7 @@ const ExtraContent = styled.h3`
 `
 //children end
 
-export default function CurrentWeather(props : { currentw: Weather["current"], currentloc: Geolocation, cycle: number }) {
+export default function CurrentWeather(props : { currentw: Weather, currentloc: Geolocation, cycle: number }) {
 
     //a simple function to give a description instead of a percentage
     function CloudDescription(cloud_cover: number): string{
@@ -92,20 +92,21 @@ export default function CurrentWeather(props : { currentw: Weather["current"], c
     }
 
     return (
-        <WeatherContainer cycle={props.cycle}>
-            <InfoContainerLeft>
-                <CurrentTime>{props.currentw.time}</CurrentTime>
-                <LocationText>{props.currentloc.city},</LocationText>
-                <LocationText>{props.currentloc.country}</LocationText>
-                <WeatherText>{props.currentw.temperature_2m}°<Fsmall>F</Fsmall> {props.cycle ? "☀️" : "🌙"}</WeatherText>
-                <FeelsLikeText>Feels like {props.currentw.apparent_temperature}°F</FeelsLikeText>
-            </InfoContainerLeft>
-            <InfoContainerRight>
-                <ContentHeader>{CloudDescription(props.currentw.cloud_cover)}</ContentHeader>
-                <ExtraContent>precipitation: {props.currentw.precipitation}%</ExtraContent>
-                <ExtraContent>Humidity: {props.currentw.relative_humidity_2m}%</ExtraContent>
-                <ExtraContent>Wind speed: {props.currentw.wind_speed_10m} km/h</ExtraContent>
-            </InfoContainerRight>
-        </WeatherContainer>
+                    <WeatherContainer cycle={props.cycle}>
+                        <InfoContainerLeft>
+                            <CurrentTime>{props.currentw.current.time}</CurrentTime>
+                            <LocationText>{props.currentloc.city},</LocationText>
+                            <LocationText>{props.currentloc.country}</LocationText>
+                            <WeatherText>{props.currentw.current.temperature_2m}°<Fsmall>F</Fsmall> {props.cycle ? "☀️" : "🌙"}</WeatherText>
+                            <FeelsLikeText>Feels like {props.currentw.current.apparent_temperature}°F</FeelsLikeText>
+                        </InfoContainerLeft>
+                        <InfoContainerRight>
+                            <ContentHeader>{CloudDescription(props.currentw.current.cloud_cover)}</ContentHeader>
+                            <ExtraContent>precipitation: {props.currentw.current.precipitation}%</ExtraContent>
+                            <ExtraContent>Humidity: {props.currentw.current.relative_humidity_2m}%</ExtraContent>
+                            <ExtraContent>Wind speed: {props.currentw.current.wind_speed_10m} km/h</ExtraContent>
+                        </InfoContainerRight>
+                    </WeatherContainer>
+
     )
 }

@@ -42,15 +42,15 @@ const Textsmall = styled.span`
 `
 //children end
 
-export default function DailyWeather(props: {dailyw: Weather["daily"]}) { //contains date and max/min temperature
+export default function DailyWeather(props: {dailyw: Weather}) { //contains date and max/min temperature
     return(
         <DailyParent>
             {
-                props.dailyw.time.map((time: string, index: number) => //index will be needed to get the temperature corresponding to the date
+                props.dailyw.daily.time.map((time: string, index: number) => //index will be needed to get the temperature corresponding to the date
                 <DailyContainer>
                     <DateText>{time}</DateText>
-                    <TempMax>{props.dailyw.temperature_2m_max[index]}°<Textsmall>MAX</Textsmall></TempMax>
-                    <TempMin>{props.dailyw.temperature_2m_min[index]}°<Textsmall>MIN</Textsmall></TempMin>
+                    <TempMax>{props.dailyw.daily.temperature_2m_max[index]}°<Textsmall>MAX</Textsmall></TempMax>
+                    <TempMin>{props.dailyw.daily.temperature_2m_min[index]}°<Textsmall>MIN</Textsmall></TempMin>
                 </DailyContainer>
             )
             }

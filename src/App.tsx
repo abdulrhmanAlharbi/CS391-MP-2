@@ -50,27 +50,11 @@ const WebsiteDescription = styled.p`
 
 export default function App() {
     const placeholder: Geolocation = {latitude: "-90", longitude: "0", city: "", country: "", timezone: ""};
-    const weatherplaceholder: Weather = {
-        current: {
-            time: "",
-            temperature_2m: 0,
-                relative_humidity_2m: 0,
-                apparent_temperature: 0,
-                is_day: 1,
-                precipitation: 0,
-                rain: 0,
-                cloud_cover: 0,
-                wind_speed_10m: 0,
-        },
-        daily: {
-            time: [],
-                temperature_2m_max: [],
-                temperature_2m_min: [],
-        }
-    }
 
     const [geolocation, setGeolocation] = useState<Geolocation>(placeholder);
-    const [weather, setWeather] = useState<Weather>(weatherplaceholder); //will store information from the api 2 items: weather current and daily
+    const [weather, setWeather] = useState<Weather[]>([]); //will store information from the api 2 items: weather current and daily
+    const [cycle, setCycle] = useState(1);
+
 
     useEffect(() => {
         //store info regarding the location of the user
@@ -94,7 +78,8 @@ export default function App() {
                 const rawData =
                     await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${geolocation.latitude}&longitude=${geolocation.longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,cloud_cover,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min&past_days=3&&forecast_days=5&temperature_unit=fahrenheit&timezone=${geolocation.timezone}`)
                 const data: Weather = await rawData.json();
-                setWeather(data);
+                setWeather([data]);
+                setCycle(data.current.is_day);
             } else {
                 console.log("Waiting for geolocation update...");
             }
@@ -107,7 +92,6 @@ export default function App() {
     }, [geolocation]) //wait for geolocation to change
 
     //misc - test day/night cycle
-    const [cycle, setCycle] = useState(weather.current.is_day);
     function ChangeCycle() {
         if(cycle) {
             setCycle(0);
@@ -118,8 +102,10 @@ export default function App() {
 
     //change theme when cycle is updated - to get original cycle on refresh
     useEffect(() => {
-        setCycle(weather.current.is_day);
-    }, [weather, weather.current.is_day]);
+        if (weather.length > 0) {
+            setCycle(weather[0].current.is_day);    //weather array will never have more than one element
+        }
+    }, [weather]);
 
     return (
         <ParentDiv>
@@ -129,15 +115,26 @@ export default function App() {
                     <WebsiteDescription>
                         This website fetches weather data from Open-Meteo API and determines the user's location through GeoJS API.
                         The website utilizes the user's IP to estimate their location and requires no additional permissions. The widgets display real-time weather conditions,
-                        and the UI theme changes based on day/night cycle. The button in the top-right corner can be used to test the alternative theme.
+                        and the widget theme changes based on day/night cycle. The button in the top-right corner can be used to test the alternative theme.
                     </WebsiteDescription>
                 </HeaderChildleft>
                 <HeaderChildright>
                     <Button onClick={ChangeCycle}>change cycle ({cycle ? "night" : "day"})</Button>
                 </HeaderChildright>
             </Header>
-            <CurrentWeather currentw={weather.current} currentloc={geolocation} cycle={cycle}/>
-            <DailyWeather dailyw={weather.daily} />
+            {weather.length > 0 ? ( //do not load any of the main widget until the api data is fetched
+                <>
+                    {weather.map((w) => (
+                        <>
+                            <CurrentWeather currentw={w} currentloc={geolocation} cycle={cycle}/>
+                            <DailyWeather dailyw={w} />
+                        </>
+                    ))}
+                </>
+                )
+                : (
+                <p>Loading weather data...</p>
+                )}
         </ParentDiv>
     )
 }
